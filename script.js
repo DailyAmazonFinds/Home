@@ -32,12 +32,16 @@ function renderProducts() {
   products.top?.forEach(p => topList.appendChild(createCard(p)));
 
   // Search functionality
-  const searchInput = document.getElementById('searchInput');
-  searchInput.addEventListener('input', function() {
-    const query = this.value.toLowerCase();
-    document.querySelectorAll('.card').forEach(card => {
-      const name = card.querySelector('h3').innerText.toLowerCase();
-      card.style.display = name.includes(query) ? '' : 'none';
-    });
+ const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', function() {
+  const query = this.value.toLowerCase();
+
+  // Filter all cards based on product code
+  document.querySelectorAll('.card').forEach(card => {
+    const code = card.querySelector('.code').innerText.toLowerCase(); // e.g. "Code: A001"
+    card.style.display = code.includes(query) ? '' : 'none';
   });
+});
+
 }
