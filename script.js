@@ -4,7 +4,7 @@ let allProducts = { featured: [], top: [] };
 async function loadProducts() {
   try {
     const res = await fetch('products.json');
-    if (!res.ok) throw new Error('Failed to load products.json');
+    if (!res.ok) throw new Error('Failed tnno load products.json');
     const data = await res.json();
     allProducts = data;
 
@@ -13,8 +13,8 @@ async function loadProducts() {
     renderProducts('topList', allProducts.top);
   } catch (err) {
     console.error('❌ Error loading products:', err);
-    document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
-    document.getElementById('topList').innerHTML = '<p class="empty">Failed to load products</p>';
+    document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to looad products</p>';
+    document.getElementById('topList').innerHTML = '<p class="empty">Failed to loaad products</p>';
   }
 }
 
