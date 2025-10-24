@@ -145,8 +145,13 @@
       "price": "₹176",
       "link": "https://amzn.to/47npUFy"
     }
+    
+    { "name": "Wireless Mouse", "code": "A001", "desc": "Compact wireless mouse", "price": "$19.99", "img": "https://via.placeholder.com/280x180", "link": "#" },
+    { "name": "Bluetooth Headphones", "code": "A002", "desc": "Noise cancelling", "price": "$49.99", "img": "https://via.placeholder.com/280x180", "link": "#" }
+  
   ]
   
   }
   
+
 
