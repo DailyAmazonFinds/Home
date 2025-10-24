@@ -11,6 +11,8 @@ async function loadProducts() {
     renderProducts('topList', data.top);
   } catch (err) {
     console.error('❌ Error loading products:', err);
+    document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
+    document.getElementById('topList').innerHTML = '<p class="empty">Failed to load products</p>';
   }
 }
 
@@ -37,7 +39,7 @@ function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   if (!list || list.length === 0) {
-    container.innerHTML = `<p class="empty">No products found.</p>`;
+    container.innerHTML = '<p class="empty">No products found.</p>';
     return;
   }
   list.forEach(product => container.appendChild(createCard(product)));
@@ -45,7 +47,7 @@ function renderProducts(containerId, list) {
 
 // Apply search filter
 function applySearch(query) {
-  const q = query.trim().toLowerCase();
+  const q = (query || '').trim().toLowerCase();
   if (!q) {
     renderProducts('featuredList', allProducts.featured);
     renderProducts('topList', allProducts.top);
@@ -56,8 +58,8 @@ function applySearch(query) {
     (p.name || '').toLowerCase().includes(q) ||
     (p.code || '').toLowerCase().includes(q);
 
-  const filteredFeatured = allProducts.featured.filter(filterFn);
-  const filteredTop = allProducts.top.filter(filterFn);
+  const filteredFeatured = (allProducts.featured || []).filter(filterFn);
+  const filteredTop = (allProducts.top || []).filter(filterFn);
 
   renderProducts('featuredList', filteredFeatured);
   renderProducts('topList', filteredTop);
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
+    // live search as user types
     searchInput.addEventListener('input', e => applySearch(e.target.value));
   }
 });
