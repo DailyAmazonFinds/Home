@@ -1,4 +1,4 @@
-let allProducts = { featured: [], top: [] };
+let allProducts = { featured: [] };
 
 // Load products from products.json
 async function loadProducts() {
@@ -16,7 +16,6 @@ async function loadProducts() {
   }
 }
 
-// Create a product card
 function createCard(product) {
   const card = document.createElement('div');
   card.className = 'card';
@@ -34,7 +33,6 @@ function createCard(product) {
   return card;
 }
 
-// Render a list of products
 function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
@@ -45,7 +43,6 @@ function renderProducts(containerId, list) {
   list.forEach(product => container.appendChild(createCard(product)));
 }
 
-// Apply search filter
 function applySearch(query) {
   const q = query.trim().toLowerCase();
   if (!q) {
@@ -58,7 +55,6 @@ function applySearch(query) {
   renderProducts('topList', allProducts.top.filter(filterFn));
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
   await loadProducts();
   document.getElementById('searchInput').addEventListener('input', e => applySearch(e.target.value));
