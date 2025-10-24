@@ -176,3 +176,29 @@ footer {
     width: 100%;
   }
 }
+.filter-bar {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.filter-btn {
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #333;
+  margin: 0 5px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.filter-btn:hover {
+  background: #f3f3f3;
+}
+
+.filter-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
