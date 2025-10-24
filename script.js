@@ -1,57 +1,65 @@
-// Fetch products.json
-fetch('products.json')
-  .then(res => res.json())
-  .then(data => {
-    renderProducts('featuredList', data.featured);
-    renderProducts('topList', data.top);
+let allProducts = { featured: [], top: [] };
 
-    // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      filterProducts('featuredList', data.featured, query);
-      filterProducts('topList', data.top, query);
-    });
-  })
-  .catch(err => console.error('Failed to load products.json', err));
+// Load products from products.json
+async function loadProducts() {
+  try {
+    const res = await fetch('products.json');
+    if (!res.ok) throw new Error('Failed to load products.json');
+    const data = await res.json();
+    allProducts = data;
+    renderProducts('featuredList', allProducts.featured);
+    renderProducts('topList', allProducts.top);
+  } catch (err) {
+    console.error('❌ Error loading products:', err);
+    document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
+    document.getElementById('topList').innerHTML = '<p class="empty">Failed to load products</p>';
+  }
+}
 
-// Create product card HTML
+// Create a product card
 function createCard(product) {
   const card = document.createElement('div');
   card.className = 'card';
-
-  const descHTML = product.desc ? `<p>${product.desc}</p>` : '';
-
+  const descHTML = product.desc ? `<p class="desc">${product.desc}</p>` : '';
   card.innerHTML = `
     <img src="${product.img}" alt="${product.name}">
     <div class="card-body">
       <h3>${product.name}</h3>
       <div class="code">Code: ${product.code}</div>
       ${descHTML}
-      <div class="price">Price: ${product.price}</div>
+      <div class="price">${product.price}</div>
       <a href="${product.link}" class="btn" target="_blank">Buy on Amazon</a>
     </div>
   `;
   return card;
 }
 
-// Render all products in a container
-function renderProducts(containerId, products) {
+// Render a list of products
+function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-  products.forEach(product => container.appendChild(createCard(product)));
+  if (!list || list.length === 0) {
+    container.innerHTML = `<p class="empty">No products found.</p>`;
+    return;
+  }
+  list.forEach(product => container.appendChild(createCard(product)));
 }
 
-// Filter products by name or code
-function filterProducts(containerId, products, query) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-
-  products.forEach(product => {
-    const name = product.name.toLowerCase();
-    const code = product.code.toLowerCase();
-    if (name.includes(query) || code.includes(query)) {
-      container.appendChild(createCard(product));
-    }
-  });
+// Apply search filter
+function applySearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    renderProducts('featuredList', allProducts.featured);
+    renderProducts('topList', allProducts.top);
+    return;
+  }
+  const filterFn = p => (p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q));
+  renderProducts('featuredList', allProducts.featured.filter(filterFn));
+  renderProducts('topList', allProducts.top.filter(filterFn));
 }
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadProducts();
+  document.getElementById('searchInput').addEventListener('input', e => applySearch(e.target.value));
+});
