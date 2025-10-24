@@ -1,4 +1,5 @@
 let allProducts = { featured: [], top: [] };
+let currentFilter = 'all';
 
 // Load products from products.json
 async function loadProducts() {
@@ -7,12 +8,10 @@ async function loadProducts() {
     if (!res.ok) throw new Error('products.json not found');
     const data = await res.json();
     allProducts = data;
-    renderProducts('featuredList', allProducts.featured);
-    renderProducts('topList', allProducts.top);
+    renderFilteredProducts();
   } catch (err) {
     console.error('❌ Error loading products:', err);
     document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
-    document.getElementById('topList').innerHTML = '<p class="empty">Failed to load products</p>';
   }
 }
 
@@ -33,7 +32,7 @@ function createCard(product) {
   return card;
 }
 
-// Render products into a container
+// Render a list of products in a container
 function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
@@ -46,26 +45,44 @@ function renderProducts(containerId, list) {
   list.forEach(product => container.appendChild(createCard(product)));
 }
 
-// Search products by name or code
-function applySearch(query) {
-  const q = query.trim().toLowerCase();
-  if (!q) {
-    renderProducts('featuredList', allProducts.featured);
-    renderProducts('topList', allProducts.top);
-    return;
+// Render products based on current filter + search
+function renderFilteredProducts(searchQuery = '') {
+  const q = searchQuery.trim().toLowerCase();
+
+  let productsToShow = [];
+  if (currentFilter === 'featured') {
+    productsToShow = allProducts.featured;
+  } else if (currentFilter === 'top') {
+    productsToShow = allProducts.top;
+  } else {
+    productsToShow = [...allProducts.featured, ...allProducts.top];
   }
 
-  const filterFn = p => (p.name?.toLowerCase().includes(q) || p.code?.toLowerCase().includes(q));
-  renderProducts('featuredList', allProducts.featured.filter(filterFn));
-  renderProducts('topList', allProducts.top.filter(filterFn));
+  if (q) {
+    productsToShow = productsToShow.filter(
+      p =>
+        (p.name || '').toLowerCase().includes(q) ||
+        (p.code || '').toLowerCase().includes(q)
+    );
+  }
+
+  renderProducts('featuredList', productsToShow);
 }
 
-// Initialize everything
+// Change filter
+function filterProducts(type) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.filter-btn[onclick="filterProducts('${type}')"]`).classList.add('active');
+  renderFilteredProducts(document.getElementById('searchInput').value);
+}
+
+// Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   await loadProducts();
 
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
-    searchInput.addEventListener('input', e => applySearch(e.target.value));
+    searchInput.addEventListener('input', e => renderFilteredProducts(e.target.value));
   }
 });
