@@ -4,7 +4,7 @@ let currentFilter = 'all';
 // Load products from products.json
 async function loadProducts() {
   try {
-    const res = await fetch('./products.json');
+    const res = await fetch('./products.json?nocache=' + Date.now());
     if (!res.ok) throw new Error('products.json not found');
     const data = await res.json();
     allProducts = data;
