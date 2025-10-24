@@ -1,6 +1,6 @@
 let allProducts = { featured: [], top: [] };
 
-// Load products from products.json
+// Load products from JSON (works on GitHub Pages)
 async function loadProducts() {
   try {
     const res = await fetch('products.json');
@@ -16,7 +16,6 @@ async function loadProducts() {
   }
 }
 
-// Create a product card
 function createCard(product) {
   const card = document.createElement('div');
   card.className = 'card';
@@ -34,18 +33,16 @@ function createCard(product) {
   return card;
 }
 
-// Render a list of products
 function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   if (!list || list.length === 0) {
-    container.innerHTML = `<p class="empty">No products found.</p>`;
+    container.innerHTML = '<p class="empty">No products found.</p>';
     return;
   }
   list.forEach(product => container.appendChild(createCard(product)));
 }
 
-// Apply search filter
 function applySearch(query) {
   const q = query.trim().toLowerCase();
   if (!q) {
@@ -58,7 +55,6 @@ function applySearch(query) {
   renderProducts('topList', allProducts.top.filter(filterFn));
 }
 
-// Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
   await loadProducts();
   document.getElementById('searchInput').addEventListener('input', e => applySearch(e.target.value));
