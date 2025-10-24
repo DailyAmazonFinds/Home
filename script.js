@@ -1,21 +1,20 @@
-let allProducts = { featured: [], top: [] };
+let allProducts = { featured: [], top: [] }; // store globally
 
-// Load products from JSON (works on GitHub Pages)
+// Load products from products.json
 async function loadProducts() {
   try {
     const res = await fetch('products.json');
     if (!res.ok) throw new Error('Failed to load products.json');
     const data = await res.json();
-    allProducts = data;
-    renderProducts('featuredList', allProducts.featured);
-    renderProducts('topList', allProducts.top);
+    allProducts = data; // store globally
+    renderProducts('featuredList', data.featured);
+    renderProducts('topList', data.top);
   } catch (err) {
     console.error('❌ Error loading products:', err);
-    document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
-    document.getElementById('topList').innerHTML = '<p class="empty">Failed to load products</p>';
   }
 }
 
+// Create a product card
 function createCard(product) {
   const card = document.createElement('div');
   card.className = 'card';
@@ -33,16 +32,18 @@ function createCard(product) {
   return card;
 }
 
+// Render a list of products
 function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
   if (!list || list.length === 0) {
-    container.innerHTML = '<p class="empty">No products found.</p>';
+    container.innerHTML = `<p class="empty">No products found.</p>`;
     return;
   }
   list.forEach(product => container.appendChild(createCard(product)));
 }
 
+// Apply search filter
 function applySearch(query) {
   const q = query.trim().toLowerCase();
   if (!q) {
@@ -50,12 +51,24 @@ function applySearch(query) {
     renderProducts('topList', allProducts.top);
     return;
   }
-  const filterFn = p => (p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q));
-  renderProducts('featuredList', allProducts.featured.filter(filterFn));
-  renderProducts('topList', allProducts.top.filter(filterFn));
+
+  const filterFn = p =>
+    (p.name || '').toLowerCase().includes(q) ||
+    (p.code || '').toLowerCase().includes(q);
+
+  const filteredFeatured = allProducts.featured.filter(filterFn);
+  const filteredTop = allProducts.top.filter(filterFn);
+
+  renderProducts('featuredList', filteredFeatured);
+  renderProducts('topList', filteredTop);
 }
 
+// Setup
 document.addEventListener('DOMContentLoaded', async () => {
   await loadProducts();
-  document.getElementById('searchInput').addEventListener('input', e => applySearch(e.target.value));
+
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => applySearch(e.target.value));
+  }
 });
