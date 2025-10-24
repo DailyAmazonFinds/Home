@@ -1,16 +1,19 @@
-// Load products from products.json
+let allProducts = { featured: [], top: [] };
+
+// Load products from products.json with fallback
 async function loadProducts() {
   try {
     const res = await fetch('products.json');
     if (!res.ok) throw new Error('Failed to load products.json');
-    return await res.json();
+    const data = await res.json();
+    allProducts = data;
   } catch (err) {
-    console.error('❌ Error loading products:', err);
-    return { featured: [], top: [] };
+    console.warn('⚠️ Could not load products.json, using default products:', err);
+    allProducts = defaultProducts;
   }
 }
 
-// Create product card
+// Create a product card
 function createCard(product) {
   const card = document.createElement('div');
   card.className = 'card';
@@ -28,25 +31,23 @@ function createCard(product) {
   return card;
 }
 
-// Render a section
+// Render products in a container
 function renderProducts(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
-
   if (!Array.isArray(list) || list.length === 0) {
     container.innerHTML = `<p class="empty">No products found.</p>`;
     return;
   }
-
   list.forEach(product => container.appendChild(createCard(product)));
 }
 
-// Apply search filter
-function applySearch(products, query) {
+// Live search function
+function applySearch(query) {
   const q = (query || '').trim().toLowerCase();
   if (!q) {
-    renderProducts('featuredList', products.featured);
-    renderProducts('topList', products.top);
+    renderProducts('featuredList', allProducts.featured);
+    renderProducts('topList', allProducts.top);
     return;
   }
 
@@ -54,17 +55,19 @@ function applySearch(products, query) {
     (p.name || '').toLowerCase().includes(q) ||
     (p.code || '').toLowerCase().includes(q);
 
-  renderProducts('featuredList', (products.featured || []).filter(filterFn));
-  renderProducts('topList', (products.top || []).filter(filterFn));
+  renderProducts('featuredList', (allProducts.featured || []).filter(filterFn));
+  renderProducts('topList', (allProducts.top || []).filter(filterFn));
 }
 
-// Load and render on startup
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', async () => {
-  const products = await loadProducts();
-  renderProducts('featuredList', products.featured);
-  renderProducts('topList', products.top);
+  await loadProducts();
 
-  document.getElementById('searchInput').addEventListener('input', e => {
-    applySearch(products, e.target.value);
-  });
+  renderProducts('featuredList', allProducts.featured);
+  renderProducts('topList', allProducts.top);
+
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => applySearch(e.target.value));
+  }
 });
