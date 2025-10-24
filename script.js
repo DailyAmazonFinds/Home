@@ -27,30 +27,6 @@ function createCard(product) {
   `;
   return card;
 }
-// Live search function for GitHub Pages
-function applySearch(query) {
-  const q = (query || '').trim().toLowerCase();
-  
-  if (!q) {
-    // No query: render all products
-    renderProducts('featuredList', allProducts.featured);
-    renderProducts('topList', allProducts.top);
-    return;
-  }
-
-  // Filter function by name or code
-  const filterFn = product =>
-    (product.name || '').toLowerCase().includes(q) ||
-    (product.code || '').toLowerCase().includes(q);
-
-  // Render filtered products
-  renderProducts('featuredList', (allProducts.featured || []).filter(filterFn));
-  renderProducts('topList', (allProducts.top || []).filter(filterFn));
-}
-
-// Example usage: attach to input
-document.getElementById('searchInput').addEventListener('input', e => applySearch(e.target.value));
-
 
 // Render a section
 function renderProducts(containerId, list) {
@@ -67,15 +43,19 @@ function renderProducts(containerId, list) {
 
 // Apply search filter
 function applySearch(products, query) {
-  const q = query.toLowerCase();
+  const q = (query || '').trim().toLowerCase();
+  if (!q) {
+    renderProducts('featuredList', products.featured);
+    renderProducts('topList', products.top);
+    return;
+  }
+
   const filterFn = p =>
-    p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q);
+    (p.name || '').toLowerCase().includes(q) ||
+    (p.code || '').toLowerCase().includes(q);
 
-  const featuredFiltered = products.featured.filter(filterFn);
-  const topFiltered = products.top.filter(filterFn);
-
-  renderProducts('featuredList', featuredFiltered);
-  renderProducts('topList', topFiltered);
+  renderProducts('featuredList', (products.featured || []).filter(filterFn));
+  renderProducts('topList', (products.top || []).filter(filterFn));
 }
 
 // Load and render on startup
