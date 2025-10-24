@@ -1,14 +1,16 @@
-let allProducts = { featured: [], top: [] }; // store globally
+let allProducts = { featured: [], top: [] };
 
-// Load products from products.json
+// Load products from products.json (GitHub Pages)
 async function loadProducts() {
   try {
     const res = await fetch('products.json');
     if (!res.ok) throw new Error('Failed to load products.json');
     const data = await res.json();
-    allProducts = data; // store globally
-    renderProducts('featuredList', data.featured);
-    renderProducts('topList', data.top);
+    allProducts = data;
+
+    // Render products initially
+    renderProducts('featuredList', allProducts.featured);
+    renderProducts('topList', allProducts.top);
   } catch (err) {
     console.error('❌ Error loading products:', err);
     document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
@@ -16,7 +18,7 @@ async function loadProducts() {
   }
 }
 
-// Create a product card
+// Create product card
 function createCard(product) {
   const card = document.createElement('div');
   card.className = 'card';
@@ -42,10 +44,11 @@ function renderProducts(containerId, list) {
     container.innerHTML = '<p class="empty">No products found.</p>';
     return;
   }
+
   list.forEach(product => container.appendChild(createCard(product)));
 }
 
-// Apply search filter
+// Live search function
 function applySearch(query) {
   const q = (query || '').trim().toLowerCase();
   if (!q) {
@@ -58,20 +61,16 @@ function applySearch(query) {
     (p.name || '').toLowerCase().includes(q) ||
     (p.code || '').toLowerCase().includes(q);
 
-  const filteredFeatured = (allProducts.featured || []).filter(filterFn);
-  const filteredTop = (allProducts.top || []).filter(filterFn);
-
-  renderProducts('featuredList', filteredFeatured);
-  renderProducts('topList', filteredTop);
+  renderProducts('featuredList', (allProducts.featured || []).filter(filterFn));
+  renderProducts('topList', (allProducts.top || []).filter(filterFn));
 }
 
-// Setup
+// Initialize
 document.addEventListener('DOMContentLoaded', async () => {
   await loadProducts();
 
   const searchInput = document.getElementById('searchInput');
   if (searchInput) {
-    // live search as user types
     searchInput.addEventListener('input', e => applySearch(e.target.value));
   }
 });
