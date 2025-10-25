@@ -78,12 +78,36 @@ header p {
 }
 
 /* ------------------ Product Cards ------------------ */
-.carousel, .grid {
-  display: flex;
-  flex-wrap: wrap;
+.carousel,.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 20px;
-  justify-content: center;
-  margin-bottom: 40px;
+  justify-items: center;
+  margin-top: 20px;
+}
+
+/* Mobile: force exactly 2 columns */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .card {
+    max-width: 180px;
+  }
+
+  .card img {
+    height: 140px;
+  }
+
+  .card-body h3 {
+    font-size: 0.95rem;
+  }
+
+  .price {
+    font-size: 0.9rem;
+  }
 }
 
 .card {
