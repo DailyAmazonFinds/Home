@@ -1,21 +1,6 @@
 {
   "featured": [
-    {
-      "name": "Wireless Mouse",
-      "code": "A001",
-      "desc": "Compact wireless mouse",
-      "price": "$19.99",
-      "img": "https://via.placeholder.com/280x180",
-      "link": "https://www.amazon.com/"
-    },
-    {
-      "name": "Bluetooth Headphones",
-      "code": "A002",
-      "desc": "Noise cancelling, wireless",
-      "price": "$49.99",
-      "img": "https://via.placeholder.com/280x180",
-      "link": "https://www.amazon.com/"
-    },
+    
     {
       "name": "Zulaxy Photo Frame Hooks for Wall Without Drilling, 10 Pack Self Adhesive Hooks for Wall Heavy Duty Strong Nail Free for Hanging Photo Frame (Hanging Hook, Transparent) Stainless Steel",
       "code": "2",
@@ -181,4 +166,5 @@
     }
   ]
 }
+
 
