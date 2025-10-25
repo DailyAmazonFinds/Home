@@ -1,10 +1,38 @@
-const allProducts = {
-  featured: [
-    { name: "Wireless Mouse", code: "A001", price: "$19.99", img: "https://via.placeholder.com/280x180", link: "#" },
-    { name: "Bluetooth Headphones", code: "A002", price: "$49.99", img: "https://via.placeholder.com/280x180", link: "#" }
+{
+  "featured": [
+    {
+      "name": "Wireless Mouse",
+      "code": "A001",
+      "desc": "Compact wireless mouse",
+      "price": "$19.99",
+      "img": "https://via.placeholder.com/280x180",
+      "link": "https://www.amazon.com/"
+    },
+    {
+      "name": "Bluetooth Headphones",
+      "code": "A002",
+      "desc": "Noise cancelling, wireless",
+      "price": "$49.99",
+      "img": "https://via.placeholder.com/280x180",
+      "link": "https://www.amazon.com/"
+    }
   ],
-  top: [
-    { name: "USB-C Charger", code: "B001", price: "$29.99", img: "https://via.placeholder.com/280x180", link: "#" },
-    { name: "Smartwatch", code: "B002", price: "$79.99", img: "https://via.placeholder.com/280x180", link: "#" }
+  "top": [
+    {
+      "name": "USB-C Charger",
+      "code": "B001",
+      "desc": "Fast charging adapter",
+      "price": "$29.99",
+      "img": "https://via.placeholder.com/280x180",
+      "link": "https://www.amazon.com/"
+    },
+    {
+      "name": "Smartwatch",
+      "code": "B002",
+      "desc": "Fitness tracker with heart rate monitor",
+      "price": "$79.99",
+      "img": "https://via.placeholder.com/280x180",
+      "link": "https://www.amazon.com/"
+    }
   ]
-};
+}
