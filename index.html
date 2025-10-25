@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Amazon Finds</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Amazon Finds</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header>
-  <h1>Daily Amazon Finds</h1>
-  <p>Your Daily Source for Top Amazon Deals</p>
-</header>
+  <!-- 🎬 Background Video -->
+  <video autoplay muted loop playsinline id="bgVideo">
+    <source src="https://v1.pinimg.com/videos/iht/expMp4/57/dd/a1/57dda1bc2ef3ddaff7f370f7396020c3_720w.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
-<div class="search-bar">
-  <input type="text" id="searchInput" placeholder="Search by name or code...">
-</div>
+  <!-- 🧭 Header -->
+  <header>
+    <h1>Daily Amazon Finds</h1>
+    <p class="tagline">Discover Unique, Useful & Trending Products</p>
+  </header>
 
-<div class="container" id="featured">
-  <h2 class="section-title">Featured Products</h2>
-  <div class="carousel" id="featuredList"></div>
-</div>
-<footer>
-  &copy; 2025 Daily Amazon Finds | Built with ❤️ and team Daily Amazon Finds
+  <!-- 🔍 Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search products by name or code...">
+  </div>
 
-<script src="script.js"></script>
+  <!-- 🛍️ Product Section -->
+  <main class="container">
+    <section>
+      <h2>✨ Featured Finds</h2>
+      <div class="product-grid" id="featuredList">
+        <!-- Products injected by script.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- 🦶 Footer -->
+  <footer>
+    <p>&copy; 2025 Daily Amazon Finds • Crafted with ❤️ by Team DAF</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
