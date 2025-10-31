@@ -1,23 +1,19 @@
-/* ==============================
-   ✨ GLOBAL THEME
-============================== */
+/* ======= RESET ======= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins", "Inter", sans-serif;
 }
 
 body {
+  background-color: #0b0b0b;
   color: #fff;
-  min-height: 100vh;
   overflow-x: hidden;
-  background: #000;
+  position: relative;
 }
 
-/* ==============================
-   🎬 BACKGROUND VIDEO
-============================== */
+/* ======= BACKGROUND VIDEO ======= */
 #bgVideo {
   position: fixed;
   top: 0;
@@ -26,208 +22,188 @@ body {
   height: 100%;
   object-fit: cover;
   z-index: -2;
-  filter: brightness(0.55) contrast(1.2) saturate(1.3);
+  filter: brightness(0.55) contrast(1.1);
+  opacity: 0.5;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(10, 10, 10, 0.45);
-  z-index: -1;
-}
-
-/* ==============================
-   🧭 HEADER
-============================== */
-header {
-  text-align: center;
-  padding: 5rem 1rem 2rem;
-  backdrop-filter: blur(4px);
-  color: #fff;
-}
-
-header h1 {
-  font-size: 2.8rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
-}
-
-header .tagline {
-  font-size: 1.2rem;
-  color: #e0e0e0;
-  margin-top: 0.5rem;
-}
+/* ======= HEADER ======= */
 .site-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10;
-  padding: 20px 40px;
+  padding: 18px 8%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(8px);
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 10;
+  box-shadow: 0 4px 25px rgba(255, 255, 255, 0.05);
 }
 
 .logo {
   font-size: 1.5rem;
   font-weight: 600;
-  letter-spacing: 0.4px;
-  color: #e6e6e6;
-  text-shadow: 0 0 18px rgba(255, 255, 255, 0.2);
-}
-
-/* ==============================
-   🔍 SEARCH BAR
-============================== */
-.search-bar {
-  text-align: center;
-  margin: 1rem 0 2rem;
-}
-
-.search-bar input {
-  width: 80%;
-  max-width: 500px;
-  padding: 0.8rem 1rem;
-  border-radius: 50px;
-  border: none;
-  font-size: 1rem;
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  backdrop-filter: blur(8px);
+  color: #f1f1f1;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.25);
+  user-select: none;
   transition: all 0.3s ease;
 }
 
-.search-bar input::placeholder {
-  color: #ccc;
+.logo:hover {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  transform: scale(1.02);
+}
+
+/* ======= DISCLOSURE ======= */
+.affiliate-disclosure {
+  margin: 100px 8% 20px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 3px solid #dcdcdc;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  font-size: 0.95rem;
+  color: #e6e6e6;
+}
+
+/* ======= SEARCH BAR ======= */
+.search-bar {
+  text-align: center;
+  margin: 40px auto;
+}
+
+.search-bar input {
+  width: 85%;
+  max-width: 500px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 40px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  transition: 0.3s ease;
 }
 
 .search-bar input:focus {
   background: rgba(255, 255, 255, 0.25);
-  transform: scale(1.03);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
 }
 
-/* ==============================
-   🛍️ PRODUCT GRID
-============================== */
+/* ======= PRODUCT SECTION ======= */
 .container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto 4rem;
+  padding: 20px 8% 60px;
+  z-index: 2;
+  position: relative;
 }
 
 .container h2 {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: #fff;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  font-size: 1.9rem;
+  margin-bottom: 25px;
+  color: #f7f7f7;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.15);
 }
 
+/* PRODUCT GRID */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
 }
 
-/* Product Card */
+/* ======= PRODUCT CARD ======= */
 .card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
   overflow: hidden;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.2);
 }
 
 .card img {
   width: 100%;
-  height: 200px;
+  height: 190px;
   object-fit: cover;
 }
 
 .card-body {
-  padding: 1rem;
+  padding: 18px;
 }
 
 .card-body h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 6px;
 }
 
 .card-body .code {
-  color: #ccc;
   font-size: 0.9rem;
-  margin-bottom: 0.8rem;
+  color: #bbb;
+  margin-bottom: 8px;
 }
 
 .card-body .price {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #00ffd0;
-  margin: 0.6rem 0 1rem;
-}
-
-/* Buy button */
-.card-body .btn {
-  display: inline-block;
-  text-decoration: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 30px;
-  background: linear-gradient(90deg, #00ffd0, #0077ff);
-  color: #000;
   font-weight: 600;
-  transition: all 0.3s ease;
+  color: #e2e2e2;
+  margin-top: 10px;
 }
 
-.card-body .btn:hover {
-  background: linear-gradient(90deg, #00e1aa, #0060d4);
-  transform: scale(1.05);
+.card-body a {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  color: #111;
+  background: linear-gradient(145deg, #f2f2f2, #bdbdbd);
+  transition: 0.3s ease;
 }
 
-/* ==============================
-   🦶 FOOTER
-============================== */
+.card-body a:hover {
+  background: linear-gradient(145deg, #ffffff, #dcdcdc);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
+}
+
+/* ======= FOOTER ======= */
 footer {
   text-align: center;
-  padding: 2rem 1rem;
-  background: rgba(0, 0, 0, 0.6);
+  padding: 25px 8%;
   font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  color: #aaa;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-.affiliate-disclosure {
-  background: rgba(255, 255, 255, 0.08);
-  border-left: 4px solid silver;
-  margin: 20px auto;
-  padding: 12px 16px;
-  max-width: 800px;
-  text-align: center;
-  border-radius: 8px;
-  color: #e0e0e0;
-  font-size: 0.95rem;
+  color: #c9c9c9;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 8px rgba(192, 192, 192, 0.3);
 }
 
-.affiliate-disclosure strong {
-  color: #fff;
-  font-weight: 600;
-  text-shadow: 0 0 4px silver;
+/* ======= RESPONSIVE ======= */
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1.3rem;
+  }
+
+  .affiliate-disclosure {
+    margin: 80px 6% 20px;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  .card img {
+    height: 160px;
+  }
 }
