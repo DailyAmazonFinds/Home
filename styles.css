@@ -44,7 +44,10 @@ body {
 }
 
 .logo {
-  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.9rem;
   font-weight: 600;
   color: #f2f2f2;
   letter-spacing: 0.5px;
@@ -53,9 +56,23 @@ body {
   transition: all 0.3s ease;
 }
 
+.logo img {
+  height: 42px;
+  width: auto;
+  border-radius: 8px;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.3));
+  transition: transform 0.3s ease;
+}
+
+.logo:hover img {
+  transform: scale(1.1);
+}
+
 .logo:hover {
   text-shadow: 0 0 25px rgba(255, 255, 255, 0.35);
   transform: scale(1.03);
+
+
 }
 
 /* ======= DISCLOSURE ======= */
