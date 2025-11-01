@@ -26,7 +26,7 @@ function createCard(product) {
       <div class="code">Code: ${product.code}</div>
       ${product.desc ? `<p class="desc">${product.desc}</p>` : ''}
       <div class="price">${product.price}</div>
-      <a href="${product.link}" class="btn" target="_blank" rel="noopener noreferrer">Buy on Amazon</a>
+      <a href="${product.link}" class="btn" target="_blank" rel="noopener noreferrer">BUY NOW</a>
     </div>
   `;
   return card;
