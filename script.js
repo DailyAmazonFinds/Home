@@ -93,7 +93,7 @@ function renderProducts(list) {
     <p class="category">${p.category}</p>
     <p class="code">Code: ${p.code}</p>
     <p class="price">${p.price}</p>
-    <a href="${p.link}" target="_blank">View on Amazon</a>
+    <a href="${p.link}" target="_blank">Buy Now</a>
   </div>
 `;
 
