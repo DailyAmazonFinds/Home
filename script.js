@@ -91,7 +91,7 @@ function renderProducts(list) {
   <div class="card-body">
     <h3>${p.name}</h3>
     <p class="category">${p.category}</p>
-    <p class="code">${p.code}</p>
+    <p class="code">Code: ${p.code}</p>
     <p class="price">${p.price}</p>
     <a href="${p.link}" target="_blank">View on Amazon</a>
   </div>
