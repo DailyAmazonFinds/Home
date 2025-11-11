@@ -83,6 +83,14 @@ body {
   color: #ffffff;
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
+.card-body .category {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+}
+
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
