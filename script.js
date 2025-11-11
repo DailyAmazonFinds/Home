@@ -87,15 +87,16 @@ function renderProducts(list) {
     const nameEsc = escapeHtml(p.name || "");
     const descHtml = p.desc ? `<p class="desc">${escapeHtml(p.desc)}</p>` : "";
     card.innerHTML = `
-      <img src="${escapeHtml(p.image)}" alt="${nameEsc}">
-      <div class="card-body">
-        <h3>${nameEsc}</h3>
-        ${p.code ? `<div class="code">Code: ${escapeHtml(p.code)}</div>` : ""}
-        ${descHtml}
-        ${p.price ? `<div class="price">${escapeHtml(p.price)}</div>` : ""}
-        <a href="${escapeHtml(p.link)}" class="btn" target="_blank" rel="noopener noreferrer">Buy Now</a>
-      </div>
-    `;
+  <img src="${p.image}" alt="${p.name}">
+  <div class="card-body">
+    <h3>${p.name}</h3>
+    <p class="category">${p.category}</p>
+    <p class="code">${p.code}</p>
+    <p class="price">${p.price}</p>
+    <a href="${p.link}" target="_blank">View on Amazon</a>
+  </div>
+`;
+
     frag.appendChild(card);
   });
 
