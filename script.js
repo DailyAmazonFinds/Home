@@ -1,88 +1,186 @@
-let allProducts = { featured: [], top: [] };
-let currentFilter = 'all';
+// script.js — Google Sheets loader + robust live search (debounced)
+// CONFIG - replace with your Sheet ID / optional sheet name
+const SHEET_ID = "1Nnil4LOj5Fkr3O8zX7KLqleOLIi8-iy3GVKoOWug9bQ";
+const SHEET_NAME = "Sheet1";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-// Load products from products.json
-async function loadProducts() {
+let allProducts = []; // flat array of product objects used for search & render
+let lastLoadedAt = 0;
+
+// ---- utility: safe lower-case string ----
+function s(str) {
+  return (str || "").toString().toLowerCase();
+}
+
+// ---- debounce helper to avoid too-many renders while typing ----
+function debounce(fn, wait = 220) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+// ---- fetch & parse Google Sheets (gviz JSON) ----
+async function loadProductsFromSheet() {
   try {
-    const res = await fetch('./products.json?nocache=' + Date.now());
-    if (!res.ok) throw new Error('products.json not found');
-    const data = await res.json();
-    allProducts = data;
-    renderFilteredProducts();
+    const res = await fetch(SHEET_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Network response ${res.status}`);
+    const text = await res.text();
+    // Google wraps JSON with: /**/google.visualization.Query.setResponse(...)
+    // strip the wrapper
+    const json = JSON.parse(text.substr(47).slice(0, -2));
+    const rows = json.table?.rows || [];
+
+    // map rows -> objects. adjust indexes to your sheet columns
+    // Expected columns: Name | Price | ImageURL | ProductLink | Code (optional) | Desc (optional) | Category (optional)
+    const products = rows.map(r => {
+      const c = r.c || [];
+      return {
+        name: c[0]?.v || "",
+        price: c[1]?.v || "",
+        image: c[2]?.v || "https://via.placeholder.com/300x200?text=No+Image",
+        link: c[3]?.v || "#",
+        code: c[4]?.v || "",
+        desc: c[5]?.v || "",
+        category: (c[6]?.v || "featured").toString().toLowerCase()
+      };
+    });
+
+    // store flattened list (we can also split by category for sections)
+    allProducts = products;
+    lastLoadedAt = Date.now();
+
+    // render initial set (featured by default)
+    renderProducts(allProducts);
+
+    // clear any previous error messages
+    clearStatus();
+
+    return products;
   } catch (err) {
-    console.error('❌ Error loading products:', err);
-    document.getElementById('featuredList').innerHTML = '<p class="empty">Failed to load products</p>';
+    showStatus("Failed to load products from Google Sheets. Check sheet publish/share settings.", true);
+    console.error("loadProductsFromSheet error:", err);
+    // keep previous allProducts if any
+    if (allProducts.length) renderProducts(allProducts);
+    return [];
   }
 }
 
-// Create a product card
-function createCard(product) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.innerHTML = `
-    <img src="${product.img}" alt="${product.name}">
-    <div class="card-body">
-      <h3>${product.name}</h3>
-      <div class="code">Code: ${product.code}</div>
-      ${product.desc ? `<p class="desc">${product.desc}</p>` : ''}
-      <div class="price">${product.price}</div>
-      <a href="${product.link}" class="btn" target="_blank" rel="noopener noreferrer">BUY NOW</a>
-    </div>
-  `;
-  return card;
-}
+// ---- render function ----
+function renderProducts(list) {
+  const container = document.getElementById("featuredList") || document.querySelector(".product-grid");
+  if (!container) return;
 
-// Render a list of products in a container
-function renderProducts(containerId, list) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
+  container.innerHTML = "";
 
-  if (!list || list.length === 0) {
-    container.innerHTML = `<p class="empty">No products found.</p>`;
+  if (!Array.isArray(list) || list.length === 0) {
+    container.innerHTML = `<p class="empty" style="color:#ccc;text-align:center;padding:20px">No products found.</p>`;
     return;
   }
 
-  list.forEach(product => container.appendChild(createCard(product)));
+  // create cards
+  const frag = document.createDocumentFragment();
+  list.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const nameEsc = escapeHtml(p.name || "");
+    const descHtml = p.desc ? `<p class="desc">${escapeHtml(p.desc)}</p>` : "";
+    card.innerHTML = `
+      <img src="${escapeHtml(p.image)}" alt="${nameEsc}">
+      <div class="card-body">
+        <h3>${nameEsc}</h3>
+        ${p.code ? `<div class="code">Code: ${escapeHtml(p.code)}</div>` : ""}
+        ${descHtml}
+        ${p.price ? `<div class="price">${escapeHtml(p.price)}</div>` : ""}
+        <a href="${escapeHtml(p.link)}" class="btn" target="_blank" rel="noopener noreferrer">Buy Now</a>
+      </div>
+    `;
+    frag.appendChild(card);
+  });
+
+  container.appendChild(frag);
 }
 
-// Render products based on current filter + search
-function renderFilteredProducts(searchQuery = '') {
-  const q = searchQuery.trim().toLowerCase();
+// ---- safe HTML escape ----
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-  let productsToShow = [];
-  if (currentFilter === 'featured') {
-    productsToShow = allProducts.featured;
-  } else if (currentFilter === 'top') {
-    productsToShow = allProducts.top;
+// ---- search implementation (debounced) ----
+function applySearchRaw(q) {
+  const query = (q || "").trim().toLowerCase();
+  if (!query) {
+    // show all products (or you can show only featured)
+    renderProducts(allProducts);
+    return;
+  }
+
+  // split by spaces and require all tokens to match (AND search)
+  const tokens = query.split(/\s+/).filter(Boolean);
+
+  const filtered = allProducts.filter(p => {
+    const hay = `${p.name} ${p.code} ${p.desc} ${p.category} ${p.price}`.toLowerCase();
+    // all tokens must be present
+    return tokens.every(t => hay.includes(t));
+  });
+
+  renderProducts(filtered);
+}
+const applySearch = debounce(applySearchRaw, 160);
+
+// ---- small UI helpers ----
+function showStatus(msg, isError = false) {
+  let el = document.getElementById("fetchStatus");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "fetchStatus";
+    el.style.position = "fixed";
+    el.style.left = "50%";
+    el.style.transform = "translateX(-50%)";
+    el.style.bottom = "24px";
+    el.style.padding = "10px 14px";
+    el.style.borderRadius = "10px";
+    el.style.zIndex = 9999;
+    el.style.fontSize = "0.95rem";
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.background = isError ? "rgba(200,60,60,0.95)" : "rgba(30,30,30,0.85)";
+  el.style.color = isError ? "#fff" : "#ddd";
+}
+
+function clearStatus() {
+  const el = document.getElementById("fetchStatus");
+  if (el) el.remove();
+}
+
+// ---- auto-refresh (optional) ----
+function startAutoRefresh(intervalMs = 120000) { // default 2 minutes
+  setInterval(async () => {
+    const prev = lastLoadedAt;
+    await loadProductsFromSheet();
+    if (lastLoadedAt > prev) showStatus("Products refreshed", false);
+    setTimeout(clearStatus, 2000);
+  }, intervalMs);
+}
+
+// ---- init on DOM ready ----
+document.addEventListener("DOMContentLoaded", () => {
+  // ensure search input and container exist
+  const si = document.getElementById("searchInput");
+  if (si) {
+    si.addEventListener("input", (e) => applySearch(e.target.value));
   } else {
-    productsToShow = [...allProducts.featured, ...allProducts.top];
+    console.warn("No #searchInput found — search will not be available.");
   }
 
-  if (q) {
-    productsToShow = productsToShow.filter(
-      p =>
-        (p.name || '').toLowerCase().includes(q) ||
-        (p.code || '').toLowerCase().includes(q)
-    );
-  }
-
-  renderProducts('featuredList', productsToShow);
-}
-
-// Change filter
-function filterProducts(type) {
-  currentFilter = type;
-  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`.filter-btn[onclick="filterProducts('${type}')"]`).classList.add('active');
-  renderFilteredProducts(document.getElementById('searchInput').value);
-}
-
-// Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadProducts();
-
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    searchInput.addEventListener('input', e => renderFilteredProducts(e.target.value));
-  }
+  loadProductsFromSheet();      // initial load
+  startAutoRefresh(2 * 60 * 1000); // optional: refresh every 2 minutes
 });
